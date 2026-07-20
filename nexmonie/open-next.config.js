@@ -1,3 +1,4 @@
+/** @type {import('@opennextjs/cloudflare').OpenNextConfig} */
 const config = {
   default: {
     override: {
@@ -22,4 +23,4 @@ const config = {
   },
 };
 
-export default config;
+module.exports = config;
