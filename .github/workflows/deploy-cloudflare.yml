@@ -41,18 +41,15 @@ jobs:
         working-directory: nexmonie
         run: |
           mkdir -p .pages-dist
-          # Static assets
           cp -r .open-next/assets/. .pages-dist/
-          # All open-next server files needed for dynamic imports at runtime
           [ -d .open-next/server-functions ] && cp -r .open-next/server-functions .pages-dist/server-functions
           [ -d .open-next/middleware ]        && cp -r .open-next/middleware        .pages-dist/middleware
           [ -d .open-next/cloudflare ]        && cp -r .open-next/cloudflare        .pages-dist/cloudflare
           [ -d .open-next/.build ]            && cp -r .open-next/.build            .pages-dist/.build
-          # Use original worker.js (proper ESM export default) as _worker.js
           cp .open-next/worker.js .pages-dist/_worker.js
-          echo "=== worker head (format check) ===" && head -5 .pages-dist/_worker.js
-          echo "=== worker tail (export check) ===" && tail -5 .pages-dist/_worker.js
-          echo "=== deploy dir size ===" && du -sh .pages-dist/
+          echo "=== worker head ===" && head -5 .pages-dist/_worker.js
+          echo "=== worker tail ===" && tail -5 .pages-dist/_worker.js
+          echo "=== size ===" && du -sh .pages-dist/
 
       - name: Deploy to Cloudflare Pages
         working-directory: nexmonie
