@@ -2,6 +2,20 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['firebase-admin'],
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      stream: false,
+      fs: false,
+      tls: false,
+      net: false,
+      zlib: false,
+      http: false,
+      https: false,
+      crypto: false,
+    };
+    return config;
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
