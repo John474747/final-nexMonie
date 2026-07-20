@@ -25,9 +25,9 @@ jobs:
         working-directory: nexmonie
         run: npm install --save-dev @cloudflare/next-on-pages wrangler --legacy-peer-deps --force
 
-      - name: Build
+      - name: Next.js build
         working-directory: nexmonie
-        run: npx @cloudflare/next-on-pages
+        run: npm run build
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -36,6 +36,10 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+
+      - name: Cloudflare transform (skip-build)
+        working-directory: nexmonie
+        run: npx @cloudflare/next-on-pages --skip-build
 
       - name: Deploy to Cloudflare Pages
         working-directory: nexmonie
