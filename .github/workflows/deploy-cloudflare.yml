@@ -21,13 +21,13 @@ jobs:
         working-directory: nexmonie
         run: npm install --legacy-peer-deps
 
-      - name: Install @opennextjs/cloudflare + wrangler
+      - name: Install @cloudflare/next-on-pages + wrangler
         working-directory: nexmonie
-        run: npm install --save-dev @opennextjs/cloudflare@1.20.1 wrangler --legacy-peer-deps
+        run: npm install --save-dev @cloudflare/next-on-pages wrangler --legacy-peer-deps --force
 
       - name: Build
         working-directory: nexmonie
-        run: npx @opennextjs/cloudflare build
+        run: npx @cloudflare/next-on-pages
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -37,13 +37,9 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
 
-      - name: Prepare Pages output (_worker.js in .open-next root)
-        working-directory: nexmonie
-        run: cp .open-next/worker.js .open-next/_worker.js
-
       - name: Deploy to Cloudflare Pages
         working-directory: nexmonie
-        run: npx wrangler pages deploy .open-next --project-name=final-nexmonie --commit-dirty=true --no-bundle
+        run: npx wrangler pages deploy .vercel/output/static --project-name=final-nexmonie --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
