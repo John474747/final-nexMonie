@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-
-export const runtime = 'edge';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthGuard } from '@/components/auth/AuthGuard';
