@@ -1,0 +1,70 @@
+{
+  "placeholderImages": [
+    {
+      "id": "wallet-product",
+      "description": "NexWallet visual",
+      "imageUrl": "https://picsum.photos/seed/wallet/400/250",
+      "imageHint": "digital wallet"
+    },
+    {
+      "id": "savings-product",
+      "description": "High-yield savings visual",
+      "imageUrl": "https://picsum.photos/seed/savings/400/250",
+      "imageHint": "saving money"
+    },
+    {
+      "id": "investment-product",
+      "description": "Investment opportunities",
+      "imageUrl": "https://picsum.photos/seed/invest/400/250",
+      "imageHint": "stock market"
+    },
+    {
+      "id": "insurance-product",
+      "description": "Insurance plans",
+      "imageUrl": "https://picsum.photos/seed/insurance/400/250",
+      "imageHint": "security protection"
+    },
+    {
+      "id": "actions-hero",
+      "description": "Actions Hub Hero Illustration",
+      "imageUrl": "https://picsum.photos/seed/fintech-hero/600/400",
+      "imageHint": "smartphone vault"
+    },
+    {
+      "id": "invite-illustration",
+      "description": "Invite friends illustration",
+      "imageUrl": "https://picsum.photos/seed/gift-box/400/300",
+      "imageHint": "gift box"
+    },
+    {
+      "id": "event-football",
+      "description": "Football Prediction Tournament",
+      "imageUrl": "https://picsum.photos/seed/foot-fin/600/300",
+      "imageHint": "football stadium"
+    },
+    {
+      "id": "event-ai",
+      "description": "AI Trading Bot Launch",
+      "imageUrl": "https://picsum.photos/seed/ai-trading/600/300",
+      "imageHint": "artificial intelligence"
+    },
+    {
+      "id": "event-rewards",
+      "description": "Global Rewards Program",
+      "imageUrl": "https://picsum.photos/seed/rewards-gift/600/300",
+      "imageHint": "gift box"
+    },
+    {
+      "id": "news-rwa",
+      "description": "RWA Earn Update",
+      "imageUrl": "https://picsum.photos/seed/rwa-news/400/300",
+      "imageHint": "real estate"
+    },
+    {
+      "id": "news-security",
+      "description": "Security Protocols Update",
+      "imageUrl": "https://picsum.photos/seed/security-news/400/300",
+      "imageHint": "cyber security"
+    }
+  ]
+}

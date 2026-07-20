@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 150 14% 98%; /* #F8FAF9 */
+    --foreground: 175 100% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 175 100% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 175 100% 5%;
+    --primary: 178 86% 29%; /* #0A8C89 - Primary Teal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 167 65% 31%; /* #1B816B */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 150 10% 94%;
+    --muted-foreground: 175 10% 40%;
+    --accent: 354 84% 77%; /* #F88F99 - Official Brand Coral/Pink */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 174 20% 90%;
+    --input: 174 20% 90%;
+    --ring: 178 86% 29%;
+    --radius: 1.5rem; /* 24px */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    overflow-x: hidden;
+    width: 100vw;
+  }
+}
+
+.shadow-soft {
+  @apply shadow-nex-soft;
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 12px);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

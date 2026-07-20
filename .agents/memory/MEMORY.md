@@ -1,0 +1,3 @@
+- [Nex Monie Project State](nexmonie-state.md) — active build; Firebase-only; repo at github.com/John474747/final-nexMonie
+- [Deposit Approval Architecture](deposit-approval.md) — client-side Firestore runTransaction (no firebase-admin; blocked in Replit env)
+- [Firebase Admin Blocked](firebase-admin-blocked.md) — firebase-admin install blocked by Replit security policy (websocket-driver)

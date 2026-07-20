@@ -1,0 +1,113 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Core profile for nex Monie users.",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "tier": { "type": "string", "enum": ["nex Basic", "nex Elite", "nex Premium"] },
+        "isVerified": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"] },
+        "joinedAt": { "type": "string", "format": "date-time" },
+        "preferredLanguage": { "type": "string", "default": "English" }
+      },
+      "required": ["email", "tier", "isVerified", "status"]
+    },
+    "MerchantProfile": {
+      "title": "MerchantProfile",
+      "description": "Extended profile for approved nexMonie P2P merchants.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "nickname": { "type": "string" },
+        "rating": { "type": "number" },
+        "totalTrades": { "type": "number" },
+        "completionRate": { "type": "number" },
+        "avgResponseTime": { "type": "string" },
+        "level": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "suspended"] },
+        "isOnline": { "type": "boolean" },
+        "tradingVolume": { "type": "number" },
+        "revenue": { "type": "number" }
+      }
+    },
+    "P2PAd": {
+      "title": "P2PAd",
+      "description": "A P2P advertisement listing.",
+      "type": "object",
+      "properties": {
+        "merchantId": { "type": "string" },
+        "type": { "type": "string", "enum": ["buy", "sell"] },
+        "asset": { "type": "string" },
+        "fiat": { "type": "string", "default": "NGN" },
+        "price": { "type": "number" },
+        "availableQuantity": { "type": "number" },
+        "minLimit": { "type": "number" },
+        "maxLimit": { "type": "number" },
+        "paymentMethods": { "type": "array", "items": { "type": "string" } },
+        "terms": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "paused", "closed"] }
+      }
+    },
+    "P2POrder": {
+      "title": "P2POrder",
+      "description": "An active or completed P2P trade.",
+      "type": "object",
+      "properties": {
+        "adId": { "type": "string" },
+        "buyerId": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "asset": { "type": "string" },
+        "quantity": { "type": "number" },
+        "fiatAmount": { "type": "number" },
+        "price": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "unpaid", "paid", "released", "completed", "cancelled", "appealed"] },
+        "paymentMethod": { "type": "string" },
+        "referenceId": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "P2PMessage": {
+      "title": "P2PMessage",
+      "description": "A message in a P2P order chat.",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image", "system"] },
+        "mediaUrl": { "type": "string" }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data."
+    },
+    "/merchant_profiles/{userId}": {
+      "schema": "MerchantProfile",
+      "description": "Merchant statistics and status."
+    },
+    "/p2p_ads/{adId}": {
+      "schema": "P2PAd",
+      "description": "Global P2P advertisement marketplace."
+    },
+    "/p2p_orders/{orderId}": {
+      "schema": "P2POrder",
+      "description": "P2P trade records."
+    },
+    "/p2p_orders/{orderId}/messages": {
+      "schema": "P2PMessage",
+      "description": "Internal chat for specific trades."
+    }
+  }
+}

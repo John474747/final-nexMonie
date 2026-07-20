@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if user is a founder
+    function isFounder() {
+      return request.auth != null && request.auth.token.email in [
+        'www.henryhart23@gmail.com',
+        'atuchukwuarinze742@gmail.com'
+      ];
+    }
+
+    // Helper: check if user is an approved merchant
+    function isMerchant() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/merchant_profiles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/merchant_profiles/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    // Helper: check if user is a merchant or founder
+    function isStaff() {
+      return isMerchant() || isFounder();
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if (request.auth != null && request.auth.uid == userId) || isFounder();
+    }
+
+    // Wallets — users read own, staff can credit (for deposit approvals)
+    match /wallets/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || isStaff());
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isStaff());
+    }
+
+    // Transactions — users see own, staff see all
+    match /transactions/{txId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if request.auth != null;
+    }
+
+    // Deposits — users create/read own, merchants/founders can approve
+    match /deposits/{depositId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isStaff());
+      allow create: if request.auth != null;
+      allow update: if isStaff();
+    }
+
+    // Merchant Profiles
+    match /merchant_profiles/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if (request.auth != null && request.auth.uid == userId) || isFounder();
+    }
+
+    // P2P Advertisements
+    match /p2p_ads/{adId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && isMerchant();
+      allow update: if request.auth != null &&
+        (resource.data.createdBy == request.auth.uid || isFounder());
+    }
+
+    // P2P Orders
+    match /p2p_orders/{orderId} {
+      allow read: if request.auth != null &&
+        (resource.data.buyerId == request.auth.uid ||
+         resource.data.sellerId == request.auth.uid ||
+         isStaff());
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        (resource.data.buyerId == request.auth.uid ||
+         resource.data.sellerId == request.auth.uid ||
+         isStaff());
+    }
+
+    // P2P Messages
+    match /p2p_messages/{msgId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // App Config — founders write, all authenticated read
+    match /app_config/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isFounder();
+    }
+
+    // Banks list
+    match /banks/{bankId} {
+      allow read: if true;
+      allow write: if isFounder();
+    }
+  }
+}
