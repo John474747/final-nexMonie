@@ -41,19 +41,30 @@ jobs:
         working-directory: nexmonie
         run: |
           mkdir -p .pages-dist
-          # Static assets
           cp -r .open-next/assets/. .pages-dist/
-          # Bundle worker.js (multi-file) → _worker.js (single bundled file)
-          npx esbuild .open-next/worker.js \
-            --bundle \
-            --outfile=.pages-dist/_worker.js \
-            --format=esm \
-            --target=esnext \
-            --conditions=workerd,worker,browser \
-            --external:node:* \
-            --external:cloudflare:* \
-            --minify
-          echo "Bundle size: $(du -sh .pages-dist/_worker.js)"
+          node - << 'EOF'
+          const esbuild = require('esbuild');
+          const { builtinModules } = require('module');
+          const external = [
+            ...builtinModules,
+            ...builtinModules.map(m => `node:${m}`),
+            'cloudflare:*',
+          ];
+          esbuild.build({
+            entryPoints: ['.open-next/worker.js'],
+            outfile: '.pages-dist/_worker.js',
+            bundle: true,
+            format: 'esm',
+            target: 'esnext',
+            conditions: ['workerd', 'worker', 'browser'],
+            external,
+            minify: true,
+            logLevel: 'info',
+          }).then(() => {
+            const { execSync } = require('child_process');
+            console.log('Bundle size:', execSync('du -sh .pages-dist/_worker.js').toString().trim());
+          }).catch(e => { console.error(e); process.exit(1); });
+          EOF
 
       - name: Deploy to Cloudflare Pages
         working-directory: nexmonie
