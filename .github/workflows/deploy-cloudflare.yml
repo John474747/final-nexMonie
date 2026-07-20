@@ -23,7 +23,7 @@ jobs:
 
       - name: Install @opennextjs/cloudflare + wrangler + esbuild
         working-directory: nexmonie
-        run: npm install --save-dev @opennextjs/cloudflare@1.20.1 wrangler esbuild --legacy-peer-deps
+        run: npm install --save-dev @opennextjs/cloudflare@1.20.1 "wrangler@3" esbuild --legacy-peer-deps
 
       - name: Build with OpenNext
         working-directory: nexmonie
