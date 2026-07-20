@@ -3,17 +3,22 @@ import type {NextConfig} from 'next';
 const nextConfig: NextConfig = {
   serverExternalPackages: ['firebase-admin'],
   webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      stream: false,
-      fs: false,
-      tls: false,
-      net: false,
-      zlib: false,
-      http: false,
-      https: false,
-      crypto: false,
-    };
+    // Stub all Node.js built-ins that firebase-admin pulls in
+    // (edge runtime cannot use them; the API route using firebase-admin
+    //  is excluded from the Pages build by @cloudflare/next-on-pages)
+    const nodeBuiltins = [
+      'stream', 'fs', 'tls', 'net', 'zlib', 'http', 'https', 'crypto',
+      'http2', 'dns', 'os', 'child_process', 'path', 'url', 'util',
+      'events', 'buffer', 'querystring', 'string_decoder', 'domain',
+      'assert', 'constants', 'vm', 'readline', 'perf_hooks',
+      'worker_threads', 'dgram', 'cluster',
+    ];
+    const fallback: Record<string, false> = { ...config.resolve.fallback };
+    for (const mod of nodeBuiltins) {
+      fallback[mod] = false;
+      fallback[`node:${mod}`] = false;
+    }
+    config.resolve.fallback = fallback;
     return config;
   },
   typescript: {
