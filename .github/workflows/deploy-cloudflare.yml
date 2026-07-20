@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Workers
 
 on:
   push:
@@ -21,11 +21,11 @@ jobs:
         working-directory: nexmonie
         run: npm install --legacy-peer-deps
 
-      - name: Install @opennextjs/cloudflare + wrangler + esbuild
+      - name: Install @opennextjs/cloudflare + wrangler
         working-directory: nexmonie
-        run: npm install --save-dev @opennextjs/cloudflare@1.20.1 "wrangler@3" esbuild --legacy-peer-deps
+        run: npm install --save-dev @opennextjs/cloudflare@1.20.1 "wrangler@3" --legacy-peer-deps
 
-      - name: Build with OpenNext
+      - name: Build with OpenNext for Cloudflare
         working-directory: nexmonie
         run: npx @opennextjs/cloudflare build
         env:
@@ -37,38 +37,9 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
 
-      - name: Bundle worker into single file for Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         working-directory: nexmonie
-        run: |
-          mkdir -p .pages-dist
-          cp -r .open-next/assets/. .pages-dist/
-          node - << 'EOF'
-          const esbuild = require('esbuild');
-          const { builtinModules } = require('module');
-          const external = [
-            ...builtinModules,
-            ...builtinModules.map(m => `node:${m}`),
-            'cloudflare:*',
-          ];
-          esbuild.build({
-            entryPoints: ['.open-next/worker.js'],
-            outfile: '.pages-dist/_worker.js',
-            bundle: true,
-            format: 'esm',
-            target: 'esnext',
-            conditions: ['workerd', 'worker', 'browser'],
-            external,
-            minify: true,
-            logLevel: 'info',
-          }).then(() => {
-            const { execSync } = require('child_process');
-            console.log('Bundle size:', execSync('du -sh .pages-dist/_worker.js').toString().trim());
-          }).catch(e => { console.error(e); process.exit(1); });
-          EOF
-
-      - name: Deploy to Cloudflare Pages
-        working-directory: nexmonie
-        run: npx wrangler pages deploy .pages-dist --project-name=final-nexmonie --commit-dirty=true --no-bundle
+        run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
